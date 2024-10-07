@@ -4,6 +4,10 @@ __lua__
 
 -- For some reason, PICO8 won't load the .p8 file, but the .lua file instead.
 
+-- Global variables
+MAP_X = 128
+MAP_Y = 128
+
 function init_actors()
   ply1={x=8,y=8,spr=0}
 end
@@ -21,7 +25,9 @@ function draw_map()
 end
 
 function is_tile(tile_type, x, y)
-  tile = mget(x,y)
+  tile_x = x // 8
+  tile_y = y // 8
+  tile = mget(tile_x, tile_y)
   has_flag = fget(tile, tile_type)
   return has_flag
 end
@@ -31,16 +37,10 @@ function can_move(x,y)
 end
 
 function update_ply1()
-  new_x = ply1.x
-  new_y = ply1.y
-  if (btn(0)) then new_x -= 2 end
-  if (btn(1)) then new_x += 2 end
-  if (btn(2)) then new_y -= 2 end
-  if (btn(3)) then new_y += 2 end
-  if (can_move(new_x, new_y)) then
-    ply1.x = mid(0, new_x, 127)
-    ply1.y = mid(0, new_y, 127)
-  end
+  if (btn(0)) then ply1.x -= 2 end
+  if (btn(1)) then ply1.x += 2 end
+  if (btn(2)) then ply1.y -= 2 end
+  if (btn(3)) then ply1.y += 2 end
 end
 
 function _init()
