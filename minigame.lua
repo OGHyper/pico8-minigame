@@ -1,8 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
-version 42
+version 35
 __lua__
-
--- For some reason, PICO8 won't load the .p8 file, but the .lua file instead.
 
 -- Global variables
 MAP_X = 128
@@ -29,7 +27,7 @@ function make_actor(x, y)
   a.w = 0.4
   a.h = 0.4
   
-  add(actor,a)
+  add(actors,a)
   
   return a
  end
@@ -87,12 +85,12 @@ end
 function control_player(pl)
   -- how fast to accelerate
   accel = 0.1
-  if (btn(0)) pl.dx -= accel 
-  if (btn(1)) pl.dx += accel 
-  if (btn(2)) pl.dy -= accel 
-  if (btn(3)) pl.dy += accel 
+  if (btn(0)) then pl.dx -= accel end
+  if (btn(1)) then pl.dx += accel end
+  if (btn(2)) then pl.dy -= accel end
+  if (btn(3)) then pl.dy += accel end
 
-  end
+end
 
 function setup_map()
   wall = 0
@@ -135,11 +133,11 @@ end
 
 function _update()
   control_player(pl)
-  foreach(actor, move_actor)
+  foreach(actors, move_actor)
 end
 
 function _draw()
   cls()
   map(0,0,0,0,16,16)
-  foreach(actor, draw_actor)
+  foreach(actors, draw_actor)
 end
