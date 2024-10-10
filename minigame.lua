@@ -36,7 +36,7 @@ function make_actor(x, y)
  function solid(x, y)
   -- grab the cell value
   val = mget(x, y)
-  -- check if flag 1 is set
+  -- check if flag 1 is set (flag 1 being my 'is a wall' flag)
   return fget(val, 1)
   end
  
@@ -92,32 +92,11 @@ function control_player(pl)
 
 end
 
-function setup_map()
-  wall = 0
-end
-
-function is_tile(tile_type, x, y)
-  tile_x = x // 8
-  tile_y = y // 8
-  tile = mget(tile_x, tile_y)
-  has_flag = fget(tile, tile_type)
-  return has_flag
-end
-
-function can_move(x,y)
-  return not is_tile(wall, x, y)
-end
-
 function update_pl()
   if (btn(0)) then pl.x -= 2 end
   if (btn(1)) then pl.x += 2 end
   if (btn(2)) then pl.y -= 2 end
   if (btn(3)) then pl.y += 2 end
-end
-
-function init_actors()
-  pl = make_actor(2, 2)
-  pl.spr = 0
 end
 
 function draw_actor(a)
@@ -127,8 +106,9 @@ function draw_actor(a)
 end
 
 function _init()
+  music(0)
   pl = make_actor(2, 2)
-  pl.spr = 0
+  pl.spr = 16
 end
 
 function _update()
