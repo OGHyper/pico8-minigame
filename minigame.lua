@@ -105,18 +105,42 @@ function draw_actor(a)
   spr(a.spr + a.frame, sx, sy)
 end
 
+function init_menu()
+  _update = update_menu
+  _draw = draw_menu
+end
+
+function update_menu()
+  -- menu code here
+  if btnp(❎) then
+    init_game()
+  end
+end
+
+function draw_menu()
+  -- menu code here
+  cls()
+  print("Press ❎ to start", 30, 63)
+end
+
 function _init()
+  init_menu()
+end
+
+function init_game()
   music(0)
   pl = make_actor(2, 2)
   pl.spr = 16
+  _update = update_game
+  _draw = draw_game
 end
 
-function _update()
+function update_game()
   control_player(pl)
   foreach(actors, move_actor)
 end
 
-function _draw()
+function draw_game()
   cls()
   map(0,0,0,0,16,16)
   foreach(actors, draw_actor)
