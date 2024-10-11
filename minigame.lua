@@ -120,7 +120,7 @@ end
 function draw_menu()
   -- menu code here
   cls()
-  print("Press ❎ to start", 30, 63)
+  print("press ❎ to start", 30, 63)
 end
 
 function _init()
