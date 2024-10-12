@@ -131,6 +131,11 @@ function init_game()
   music(0)
   pl = make_actor(2, 2)
   pl.spr = 16
+  local ball = make_actor(8.5,7.5)
+  ball.spr = 33
+  ball.dx = 0.4
+  ball.dy =- 0.1
+  ball.inertia = 1
   _update = update_game
   _draw = draw_game
 end
