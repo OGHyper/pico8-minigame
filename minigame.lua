@@ -49,24 +49,98 @@ function make_actor(x, y)
     solid(x+w,y+h)
   end
 
+  function solid_actor(a, dx, dy)
+    for a2 in all(actors) do
+      if a2 != a then
+      
+        local x=(a.x+dx) - a2.x
+        local y=(a.y+dy) - a2.y
+        
+        if ((abs(x) < (a.w+a2.w)) and
+             (abs(y) < (a.h+a2.h)))
+        then
+          
+          -- moving together?
+          -- this allows actors to
+          -- overlap initially 
+          -- without sticking together    
+          
+          -- process each axis separately
+          
+          -- along x
+          
+          if (dx != 0 and abs(x) <
+              abs(a.x-a2.x))
+          then
+            
+            v=abs(a.dx)>abs(a2.dx) and 
+              a.dx or a2.dx
+            a.dx,a2.dx = v,v
+            
+            local ca=
+             collide_event(a,a2) or
+             collide_event(a2,a)
+            return not ca
+          end
+          
+          -- along y
+          
+          if (dy != 0 and abs(y) <
+               abs(a.y-a2.y)) then
+            v=abs(a.dy)>abs(a2.dy) and 
+              a.dy or a2.dy
+            a.dy,a2.dy = v,v
+            
+            local ca=
+             collide_event(a,a2) or
+             collide_event(a2,a)
+            return not ca
+          end
+          
+        end
+      end
+    end
+    
+    return false
+  end
+
+-- checks both walls and actors
+function solid_a(a, dx, dy)
+	if solid_area(a.x+dx,a.y+dy,
+				a.w,a.h) then
+				return true end
+	return solid_actor(a, dx, dy) 
+end
+
+function collide_event(a1, a2)
+  -- AND a2 == coin sprite
+  if (a1 == pl and a2.spr == 34) then
+    del(actors, a2)
+    -- sfx here
+    return true
+  end
+  -- bump sfx
+  return false
+end
+
  -- from zep
  function move_actor(a)
   -- only move actor along x
   -- if the resulting position
   -- will not overlap with a wall
-  if not solid_area(a.x + a.dx, a.y, a.w, a.h) then
-    a.x += a.dx
-  else   
-    -- otherwise bounce
-    a.dx *= -a.bounce
-  end
+  if not solid_a(a, a.dx, 0) then
+		a.x += a.dx
+	else
+		a.dx *= -a.bounce
+	end
 
-  -- ditto for y
-  if not solid_area(a.x, a.y + a.dy, a.w, a.h) then
-    a.y += a.dy
-  else
-    a.dy *= -a.bounce
-  end
+	-- ditto for y
+
+	if not solid_a(a, 0, a.dy) then
+		a.y += a.dy
+	else
+		a.dy *= -a.bounce
+	end
 
   a.dx *= a.inertia
   a.dy *= a.inertia
@@ -90,13 +164,6 @@ function control_player(pl)
   if (btn(2)) then pl.dy -= accel end
   if (btn(3)) then pl.dy += accel end
 
-end
-
-function update_pl()
-  if (btn(0)) then pl.x -= 2 end
-  if (btn(1)) then pl.x += 2 end
-  if (btn(2)) then pl.y -= 2 end
-  if (btn(3)) then pl.y += 2 end
 end
 
 function draw_actor(a)
@@ -131,8 +198,8 @@ function init_game()
   music(0)
   pl = make_actor(2, 2)
   pl.spr = 16
-  local ball = make_actor(8.5,7.5)
-  ball.spr = 33
+  ball = make_actor(8.5,7.5)
+  ball.spr = 32
   ball.dx = 0.4
   ball.dy =- 0.1
   ball.inertia = 1
