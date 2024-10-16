@@ -6,6 +6,7 @@ __lua__
 MAP_X = 128
 MAP_Y = 128
 actors = {}
+coins_collected = 0
 
 function make_actor(x, y)
   a={}
@@ -46,6 +47,21 @@ function make_actor(x, y)
     solid(x-w,y+h) or
     solid(x+w,y+h)
   end
+
+  function coin(x, y)
+    -- grab the cell value
+    val = mget(x, y)
+    -- check if flag 2 is set (flag 2 being my 'is a coin' flag)
+    return fget(val, 2)
+    end
+   
+   function is_coin(x,y,w,h)
+    return 
+      coin(x-w,y-h) or
+      coin(x+w,y-h) or
+      coin(x-w,y+h) or
+      coin(x+w,y+h)
+    end
 
   function solid_actor(a, dx, dy)
     for a2 in all(actors) do
@@ -93,9 +109,9 @@ function make_actor(x, y)
 
 -- checks both walls and actors
 function solid_a(a, dx, dy)
-	if solid_area(a.x+dx,a.y+dy,
-				a.w,a.h) then
-				return true end
+	if solid_area(a.x+dx, a.y+dy, a.w, a.h) then
+		return true
+  end
 	return solid_actor(a, dx, dy) 
 end
 
@@ -128,6 +144,10 @@ end
 		a.dy *= -a.bounce
 	end
 
+  if is_coin(a.x, a.y, a.w, a.h) and a == pl then
+    -- delete the coin and update the score counter
+    coins_collected += 1
+  end
   a.dx *= a.inertia
   a.dy *= a.inertia
  
@@ -173,6 +193,7 @@ end
 function draw_menu()
   -- menu code here
   cls()
+  print ("avoid the ball", 30, 49)
   print("press ❎ to start", 30, 63)
 end
 
@@ -182,6 +203,7 @@ end
 
 function init_game()
   music(0)
+  coins_collected = 0
   pl = make_actor(2, 2)
   pl.spr = 16
   ball = make_actor(8.5,7.5)
@@ -202,4 +224,5 @@ function draw_game()
   cls()
   map(0,0,0,0,16,16)
   foreach(actors, draw_actor)
+  print("coins: "..coins_collected, 16, 16)
 end
