@@ -7,7 +7,6 @@ MAP_X = 128
 MAP_Y = 128
 actors = {}
 
--- From zep
 function make_actor(x, y)
   a={}
   a.x = x
@@ -32,7 +31,7 @@ function make_actor(x, y)
   return a
  end
 
- -- from zep
+ -- copy solid and solid area to modify it to check for the coin flagged sprite
  function solid(x, y)
   -- grab the cell value
   val = mget(x, y)
@@ -40,7 +39,6 @@ function make_actor(x, y)
   return fget(val, 1)
   end
  
- -- from zep
  function solid_area(x,y,w,h)
   return 
     solid(x-w,y-h) or
@@ -52,55 +50,44 @@ function make_actor(x, y)
   function solid_actor(a, dx, dy)
     for a2 in all(actors) do
       if a2 != a then
-      
         local x=(a.x+dx) - a2.x
         local y=(a.y+dy) - a2.y
         
         if ((abs(x) < (a.w+a2.w)) and
              (abs(y) < (a.h+a2.h)))
         then
-          
           -- moving together?
           -- this allows actors to
           -- overlap initially 
           -- without sticking together    
-          
           -- process each axis separately
-          
           -- along x
-          
           if (dx != 0 and abs(x) <
               abs(a.x-a2.x))
           then
-            
             v=abs(a.dx)>abs(a2.dx) and 
               a.dx or a2.dx
             a.dx,a2.dx = v,v
-            
             local ca=
              collide_event(a,a2) or
              collide_event(a2,a)
             return not ca
           end
-          
+
           -- along y
-          
           if (dy != 0 and abs(y) <
                abs(a.y-a2.y)) then
             v=abs(a.dy)>abs(a2.dy) and 
               a.dy or a2.dy
             a.dy,a2.dy = v,v
-            
             local ca=
              collide_event(a,a2) or
              collide_event(a2,a)
             return not ca
           end
-          
         end
       end
     end
-    
     return false
   end
 
@@ -123,7 +110,6 @@ function collide_event(a1, a2)
   return false
 end
 
- -- from zep
  function move_actor(a)
   -- only move actor along x
   -- if the resulting position
