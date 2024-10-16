@@ -7,3 +7,4 @@ Mini Game in PICO-8 made for my Game Design Class (CS 4750 Computer Game Design)
     - Main Menu Structure by nerdyteachers (https://nerdyteachers.com/Explain/MainMenu2/)
 # Known Issues
 - Balls will sometimes get stuck on eachother
+- Moving between winscreen and endscreen back to the game will not clear previous game's game state

@@ -60,10 +60,6 @@ function make_actor(x, y)
           goto continue
         end
 
-        if (a.spr == pl and a2.spr == 32) or (a.spr == 32 and a2.spr == pl) then
-          lives -= 1
-        end
-
         if ((abs(x) < (a.w+a2.w)) and
              (abs(y) < (a.h+a2.h)))
         then
@@ -118,6 +114,9 @@ function collide_event(a1, a2)
     -- sfx here
     coins_collected += 1
     return true
+  end
+  if (a1 == pl and a2.spr == 32) then
+    lives -= 1
   end
   -- bump sfx
   return false
@@ -228,6 +227,12 @@ end
 function update_game()
   control_player(pl)
   foreach(actors, move_actor)
+  if (lives == 0) then
+    init_endscreen()
+  end
+  if (coins_collected == 39) then
+    init_winscreen()
+  end
 end
 
 function draw_game()
@@ -236,4 +241,40 @@ function draw_game()
   foreach(actors, draw_actor)
   print("lives: "..lives, 4, 13*8)
   print("coins: "..coins_collected, 4, 14*8)
+end
+
+function init_endscreen()
+  actors = {}
+  _update = update_endscreen
+  _draw = draw_endscreen
+end
+
+function update_endscreen()
+  if btnp(❎) then
+    _init()
+  end
+end
+
+function draw_endscreen()
+  cls()
+  print ("game over :(", 30, 49)
+  print("press ❎ to return to main menu", 5, 63)
+end
+
+function init_winscreen()
+  actors = {}
+  _update = update_winscreen
+  _draw = draw_winscreen
+end
+
+function update_winscreen()
+  if btnp(❎) then
+    init_menu()
+  end
+end
+
+function draw_winscreen()
+  cls()
+  print ("you win! :)", 30, 49)
+  print("press ❎ to return to main menu", 5, 63)
 end
