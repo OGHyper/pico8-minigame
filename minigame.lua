@@ -7,6 +7,7 @@ MAP_X = 128
 MAP_Y = 128
 actors = {}
 coins_collected = 0
+lives = 3
 
 function make_actor(x, y)
   a={}
@@ -120,6 +121,7 @@ function collide_event(a1, a2)
   if (a1 == pl and a2.spr == 34) then
     del(actors, a2)
     -- sfx here
+    coins_collected += 1
     return true
   end
   -- bump sfx
@@ -204,13 +206,30 @@ end
 function init_game()
   music(0)
   coins_collected = 0
-  pl = make_actor(2, 2)
+  lives = 0
+  pl = make_actor(1.5, 1.5)
   pl.spr = 16
-  ball = make_actor(8.5,7.5)
-  ball.spr = 32
-  ball.dx = 0.4
-  ball.dy =- 0.1
-  ball.inertia = 1
+  
+  local ball1 = make_actor(8,3)
+  ball1.spr = 32
+  ball1.dx = 0.4
+  ball1.dy =- 0.1
+  ball1.inertia = 1
+  
+  local ball2 = make_actor(8,9)
+  ball2.spr = 32
+  ball2.dx = 0.4
+  ball2.dy =- 0.1
+  ball2.inertia = 1
+
+  for i = 1.5, 14.5, 2 do
+    for j = 1.5, 11.5, 2 do
+      if  not solid(i, j) do
+        a = make_actor(i, j)
+        a.spr = 34
+      end
+    end
+  end
   _update = update_game
   _draw = draw_game
 end
@@ -224,5 +243,5 @@ function draw_game()
   cls()
   map(0,0,0,0,16,16)
   foreach(actors, draw_actor)
-  print("coins: "..coins_collected, 16, 16)
+  print("coins: "..coins_collected, 4, 13*8)
 end
