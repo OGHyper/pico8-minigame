@@ -49,27 +49,21 @@ function make_actor(x, y)
     solid(x+w,y+h)
   end
 
-  function coin(x, y)
-    -- grab the cell value
-    val = mget(x, y)
-    -- check if flag 2 is set (flag 2 being my 'is a coin' flag)
-    return fget(val, 2)
-    end
-   
-   function is_coin(x,y,w,h)
-    return 
-      coin(x-w,y-h) or
-      coin(x+w,y-h) or
-      coin(x-w,y+h) or
-      coin(x+w,y+h)
-    end
-
   function solid_actor(a, dx, dy)
     for a2 in all(actors) do
       if a2 != a then
         local x=(a.x+dx) - a2.x
         local y=(a.y+dy) - a2.y
         
+        if (a.spr == 20 and a2.spr == 32) or (a.spr == 32 and a2.spr == 20) then
+          -- Skip collision processing between treasure and ball
+          goto continue
+        end
+
+        if (a.spr == pl and a2.spr == 32) or (a.spr == 32 and a2.spr == pl) then
+          lives -= 1
+        end
+
         if ((abs(x) < (a.w+a2.w)) and
              (abs(y) < (a.h+a2.h)))
         then
@@ -104,6 +98,7 @@ function make_actor(x, y)
           end
         end
       end
+      ::continue::
     end
     return false
   end
@@ -118,7 +113,7 @@ end
 
 function collide_event(a1, a2)
   -- AND a2 == coin sprite
-  if (a1 == pl and a2.spr == 34) then
+  if (a1 == pl and a2.spr == 20) then
     del(actors, a2)
     -- sfx here
     coins_collected += 1
@@ -146,10 +141,6 @@ end
 		a.dy *= -a.bounce
 	end
 
-  if is_coin(a.x, a.y, a.w, a.h) and a == pl then
-    -- delete the coin and update the score counter
-    coins_collected += 1
-  end
   a.dx *= a.inertia
   a.dy *= a.inertia
  
@@ -206,7 +197,7 @@ end
 function init_game()
   music(0)
   coins_collected = 0
-  lives = 0
+  lives = 3
   pl = make_actor(1.5, 1.5)
   pl.spr = 16
   
@@ -226,7 +217,7 @@ function init_game()
     for j = 1.5, 11.5, 2 do
       if  not solid(i, j) do
         a = make_actor(i, j)
-        a.spr = 34
+        a.spr = 20
       end
     end
   end
@@ -243,5 +234,6 @@ function draw_game()
   cls()
   map(0,0,0,0,16,16)
   foreach(actors, draw_actor)
-  print("coins: "..coins_collected, 4, 13*8)
+  print("lives: "..lives, 4, 13*8)
+  print("coins: "..coins_collected, 4, 14*8)
 end
