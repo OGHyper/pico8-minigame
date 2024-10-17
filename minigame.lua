@@ -246,6 +246,7 @@ function draw_game()
   foreach(actors, draw_actor)
   print("lives: "..lives, 4, 13*8)
   print("coins: "..coins_collected, 4, 14*8)
+  print("hold ❎ to sprint", 4, 15*8)
 end
 
 function init_endscreen()
