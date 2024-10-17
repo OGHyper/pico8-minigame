@@ -156,7 +156,12 @@ end
 
 function control_player(pl)
   -- how fast to accelerate
-  accel = 0.1
+  if (btn(❎)) then
+    accel = 0.2
+  else
+    accel = 0.1
+  end
+  
   if (btn(0)) then pl.dx -= accel end
   if (btn(1)) then pl.dx += accel end
   if (btn(2)) then pl.dy -= accel end
